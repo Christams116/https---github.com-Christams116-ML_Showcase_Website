@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .flex-container {
+            display: flex;
+            gap: 20px; /* Space between columns */
+            flex-wrap: wrap; /* Wrap items to next line on small screens */
+        }
+        .form-container, .info-container {
+            flex: 1; /* Grow to fill available space */
+            min-width: 300px; /* Minimum width for responsiveness */
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="range"],
+        select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        input[type="submit"] {
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background: #555;
+        }
+        .feature-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two columns layout */
+            gap: 10px; /* Space between items */
+        }
+        .feature-options label {
+            display: flex;
+            align-items: center;
+        }
+        .explanation {
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .model-info {
+            padding: 20px;
+            border-radius: 5px;
+            background: #fff;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .model-info h3 {
+            margin-top: 0;
+        }
+        .model-info p {
+            margin-bottom: 10px;
+        }
+        .model-info img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Machine Learning Model Selection</h1>
+    </header>
+    <div class="container">
+        <div class="flex-container">
+            <div class="form-container">
+                <form method="POST">
+                    <label for="model">Select Model:</label>
+                    <select id="model" name="model">
+                        <option value="">--select model--</option>
+                        <option value="linear_regression">Linear Regression</option>
+                        <option value="kmeans">K-Means Clustering</option>
+                        <option value="SVM">SVM</option>
+                        <option value="Tree">Hierarchical Tree</option>
+                        <option value="logistic">Logistic Regression</option>
+                        <option value="Net">Neural Net</option>
+                        <!-- Add more options for other models as needed -->
+                    </select>
+
+                    <!-- Feature options for Linear Regression -->
+                    <div id="linear_regression_features" class="feature-options" style="display: none;">
+                        <label for="sample_size">Sample Size:</label>
+                        <span id="sample_size_value">100</span>%
+                        <input type="range" id="sample_size" name="sample_size" min="5" max="100" value="100" step="1" oninput="updateSliderValue(this.value)">
+                        
+                        <label for="test_size">Test Size:</label>
+                        <input type="text" id="test_size" name="test_size" value="0.2">
+                        <label for="days_adjust">Days Adjustment:</label>
+                        <input type="text" id="days_adjust" name="days_adjust" value="7">
+                        <label for="features">Select Features:</label><br>
+                        <input type="checkbox" id="open_lr" name="features" value="Open" checked>
+                        <label for="open_lr"> Open</label>
+                        <input type="checkbox" id="high_lr" name="features" value="High" checked>
+                        <label for="high_lr"> High</label>
+                        <input type="checkbox" id="low_lr" name="features" value="Low" checked>
+                        <label for="low_lr"> Low</label>
+                        <input type="checkbox" id="volume_lr" name="features" value="Volume" checked>
+                        <label for="volume_lr"> Volume</label>
+                        <input type="checkbox" id="close_lr" name="features" value="Close" checked>
+                        <label for="close_lr"> Close</label>
+                        <input type="submit" value="Submit">
+                    </div>
+
+                    <!-- Feature options for K-Means -->
+                    <div id="kmeans_features" class="feature-options" style="display: none;">
+                        <label for="sample_size">Sample Size:</label>
+                        <span id="sample_size_value">100</span>%
+                        <input type="range" id="sample_size" name="sample_size" min="5" max="100" value="100" step="1" oninput="updateSliderValue(this.value)">
+                        <label for="test_size">Test Size:</label>
+                        <input type="text" id="test_size" name="test_size" value="0.2">
+                        <label for="num_clusters">Number of Clusters:</label>
+                        <input type="text" id="num_clusters" name="num_clusters" value="3">
+                        <label for="features">Select Features:</label><br>
+                        <input type="checkbox" id="sex" name="features" value="Sex" checked>
+                        <label for="sex"> Sex</label>
+                        <input type="checkbox" id="marital_status" name="features" value="Marital status" checked>
+                        <label for="marital_status"> Marital status</label>
+                        <input type="checkbox" id="age" name="features" value="Age" checked>
+                        <label for="age"> Age</label>
+                        <input type="checkbox" id="education" name="features" value="Education" checked>
+                        <label for="education"> Education</label>
+                        <input type="checkbox" id="occupation" name="features" value="Occupation" checked>
+                        <label for="occupation"> Occupation</label>
+                        <input type="checkbox" id="settlement_size" name="features" value="Settlement size" checked>
+                        <label for="settlement_size"> Settlement size</label>
+                        <input type="submit" value="Submit">
+                    </div>
+
+                    <!-- Feature options for SVM -->
+                    <div id="SVM_features" class="feature-options" style="display: none;">
+                        <label for="sample_size">Sample Size:</label>
+                        <span id="sample_size_value">100</span>%
+                        <input type="range" id="sample_size" name="sample_size" min="5" max="100" value="100" step="1" oninput="updateSliderValue(this.value)">
+                        <label for="test_size">Test Size:</label>
+                        <input type="text" id="test_size" name="test_size" value="0.2">
+                        <label for="features">Select Features:</label><br>
+                        <input type="checkbox" id="sepal_length" name="features" value="sepal_length" checked>
+                        <label for="sepal_length"> Sepal Length</label>
+                        <input type="checkbox" id="sepal_width" name="features" value="sepal_width" checked>
+                        <label for="sepal_width"> Sepal Width</label>
+                        <input type="checkbox" id="petal_length" name="features" value="petal_length">
+                        <label for="petal_length"> Petal Length</label>
+                        <input type="checkbox" id="petal_width" name="features" value="petal_width">
+                        <label for="petal_width"> Petal Width</label>
+                        <input type="submit" value="Submit">
+
+                    </div>
+
+                    <!-- Feature options for Hierarchical Tree -->
+                    <div id="Tree_features" class="feature-options" style="display: none;">
+                        <label for="sample_size">Sample Size:</label>
+                        <span id="sample_size_value">100</span>%
+                        <input type="range" id="sample_size" name="sample_size" min="5" max="100" value="100" step="1" oninput="updateSliderValue(this.value)">
+                        <label for="test_size">Test Size:</label>
+                        <input type="text" id="test_size" name="test_size" value="0.2">
+                        <label for="features">Select Features:</label><br>
+                        <input type="checkbox" id="fixed_acidity" name="features" value="Fixed Acidity" checked>
+                        <label for="fixed_acidity"> Fixed Acidity</label>
+                        <input type="checkbox" id="volatile_acidity" name="features" value="Volatile Acidity" checked>
+                        <label for="volatile_acidity"> Volatile Acidity</label>
+                        <input type="checkbox" id="citric_acid" name="features" value="Citric Acid" checked>
+                        <label for="citric_acid"> Citric Acid</label>
+                        <input type="checkbox" id="residual_sugar" name="features" value="Residual Sugar" checked>
+                        <label for="residual_sugar"> Residual Sugar</label>
+                        <input type="checkbox" id="chlorides" name="features" value="Chlorides" checked>
+                        <label for="chlorides"> Chlorides</label>
+                        <input type="checkbox" id="free_sulfur_dioxide" name="features" value="Free Sulfur Dioxide" checked>
+                        <label for="free_sulfur_dioxide"> Free Sulfur Dioxide</label>
+                        <input type="checkbox" id="total_sulfur_dioxide" name="features" value="Total Sulfur Dioxide" checked>
+                        <label for="total_sulfur_dioxide"> Total Sulfur Dioxide</label>
+                        <input type="checkbox" id="density" name="features" value="Density" checked>
+                        <label for="density"> Density</label>
+                        <input type="checkbox" id="ph" name="features" value="pH" checked>
+                        <label for="ph"> pH</label>
+                        <input type="checkbox" id="sulphates" name="features" value="Sulphates" checked>
+                        <label for="sulphates"> Sulphates</label>
+                        <input type="checkbox" id="alcohol" name="features" value="Alcohol" checked>
+                        <label for="alcohol"> Alcohol</label>
+                        <input type="submit" value="Submit">
+                    </div>
+
+                    <!-- Feature options for Logistic Regression -->
+                    <div id="logistic_features" class="feature-options" style="display: none;">
+                        <label for="sample_size_log">Sample Size:</label>
+                        <span id="sample_size_value">100</span>%
+                        <input type="range" id="sample_size" name="sample_size" min="5" max="100" value="100" step="1" oninput="updateSliderValue(this.value)">
+                        <label for="test_size">Test Size:</label>
+                        <input type="text" id="test_size" name="test_size" value="0.2">
+                        <label for="features">Select Features:</label><br>
+                        <input type="checkbox" id="temperature" name="features" value="Temperature (C)" checked>
+                        <label for="temperature"> Temperature (C)</label>
+                        <input type="checkbox" id="apparent_temperature" name="features" value="Apparent Temperature (C)" checked>
+                        <label for="apparent_temperature"> Apparent Temperature (C)</label>
+                        <input type="checkbox" id="humidity" name="features" value="Humidity" checked>
+                        <label for="humidity"> Humidity</label>
+                        <input type="checkbox" id="wind_speed" name="features" value="Wind Speed (km/h)" checked>
+                        <label for="wind_speed"> Wind Speed (km/h)</label>
+                        <input type="checkbox" id="wind_bearing" name="features" value="Wind Bearing (degrees)" checked>
+                        <label for="wind_bearing"> Wind Bearing (degrees)</label>
+                        <input type="checkbox" id="visibility" name="features" value="Visibility (km)" checked>
+                        <label for="visibility"> Visibility (km)</label>
+                        <input type="checkbox" id="cloud_cover" name="features" value="Cloud Cover" checked>
+                        <label for="cloud_cover"> Cloud Cover</label>
+                        <input type="checkbox" id="pressure" name="features" value="Pressure (millibars)" checked>
+                        <label for="pressure"> Pressure (millibars)</label>
+                        <input type="checkbox" id="year" name="features" value="Year" checked>
+                        <label for="year"> Year</label>
+                        <input type="checkbox" id="month" name="features" value="Month" checked>
+                        <label for="month"> Month</label>
+                        <input type="checkbox" id="high" name="features" value="High" checked>
+                        <label for="high"> High</label>
+                        <input type="checkbox" id="day" name="features" value="Day" checked>
+                        <label for="day"> Day</label>
+                        <input type="checkbox" id="hour" name="features" value="Hour" checked>
+                        <label for="hour"> Hour</label>
+                        <input type="submit" value="Submit">
+                    </div>
+
+                    <!-- Feature options for Neural Net -->
+                    <div id="net_features" class="feature-options" style="display: none;">
+                        <!-- Add Neural Net-specific options here if needed -->
+                        <label for="sample_size">Sample Size:</label>
+                        <span id="sample_size_value">100</span>%
+                        <input type="range" id="sample_size" name="sample_size" min="5" max="100" value="100" step="1" oninput="updateSliderValue(this.value)">
+                        <label for="test_size">Test Size:</label>
+                        <input type="text" id="test_size" name="test_size" value="0.2">
+                        <input type="submit" value="Submit">
+                    </div>
+                </form>
+            </div>
+
+            <div class="info-container">
+                <div class="model-info" id="model_info">
+                    <h3>Model Descriptions</h3>
+                    <div id="linear_regression_info" style="display: none;">
+                        <p><strong>Linear Regression:</strong> This model predicts a continuous target variable based on one or more predictor variables. It's commonly used to understand relationships between variables and make forecasts.</p>
+                    </div>
+                    <div id="kmeans_info" style="display: none;">
+                        <p><strong>K-Means Clustering:</strong> An unsupervised learning algorithm used to partition data into clusters based on similarity. It helps identify distinct groups within the data.</p>
+                    </div>
+                    <div id="SVM_info" style="display: none;">
+                        <p><strong>Support Vector Machine (SVM):</strong> A supervised learning model used for classification tasks. It works by finding the optimal hyperplane that best separates different classes in the feature space.</p>
+                    </div>
+                    <div id="Tree_info" style="display: none;">
+                        <p><strong>Hierarchical Tree:</strong> A method of clustering that builds a tree of clusters by recursively splitting or merging them. It provides a detailed view of data structure and relationships.</p>
+                    </div>
+                    <div id="logistic_info" style="display: none;">
+                        <p><strong>Logistic Regression:</strong> A classification model that predicts binary outcomes based on one or more predictor variables. It's widely used in various applications to estimate probabilities and make decisions.</p>
+                    </div>
+                    <div id="Net_info" style="display: none;">
+                        <p><strong>Neural Network:</strong> A powerful model inspired by the human brain, used for complex tasks like image and speech recognition. It learns to make predictions or classify data through multiple layers of interconnected nodes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('model').addEventListener('change', function() {
+            var model = this.value;
+            var featureOptions = document.querySelectorAll('.feature-options');
+            var modelInfo = document.querySelectorAll('#model_info > div');
+
+            featureOptions.forEach(function(option) {
+                option.style.display = 'none';
+            });
+            
+            modelInfo.forEach(function(info) {
+                info.style.display = 'none';
+            });
+
+            if (model) {
+                document.getElementById(model + '_features').style.display = 'block';
+                document.getElementById(model + '_info').style.display = 'block';
+            }
+        });
+
+        function updateSliderValue(value) {
+            document.getElementById('sample_size_value').textContent = value;
+            document.getElementById('sample_size_log').textContent = value;
+
+        }
+    </script>
+</body>
+</html>
